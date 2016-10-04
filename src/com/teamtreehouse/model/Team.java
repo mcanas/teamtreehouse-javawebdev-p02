@@ -89,7 +89,9 @@ public class Team implements Comparable<Team> {
     }
 
     public String getRoster() {
-        return getPlayerList().toString();
+        String output = Prompter.getTitle(String.format("%s Roster", getName()));
+        output += getPlayerList().toString();
+        return output;
     }
 
     @Override

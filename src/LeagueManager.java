@@ -55,88 +55,22 @@ public class LeagueManager {
 
                 switch(choice) {
                     case "1":
-                        if(mAllTeams.get().size() < mAllPlayers.get().size()) {
-                            Team newTeam = promptForNewTeam();
-                            mAllTeams.add(newTeam);
-
-                            Prompter.printResponse(
-                                String.format("New team %s coached by %s has been created",
-                                    newTeam.getName(),
-                                    newTeam.getCoach()
-                                )
-                            );
-                        } else {
-                            Prompter.printResponse("No players available to create a team");
-                        }
-
+                        onCreateNewTeam();
                         break;
                     case "2":
-                        if(mAllTeams.get().size() > 0 && mSelectedPlayers.get().size() < mAllPlayers.get().size()) {
-                            Team teamToAddTo = promptForTeam(mAllTeams);
-                            Player playerToAdd = promptForPlayer(
-                                getRemainingPlayers(mAllPlayers, mSelectedPlayers));
-
-                            teamToAddTo.addPlayer(playerToAdd);
-                            mSelectedPlayers.add(playerToAdd);
-
-                            Prompter.printResponse(String
-                                .format("%s %s has been added to %s", playerToAdd.getFirstName(),
-                                    playerToAdd.getLastName(), teamToAddTo.getName()));
-                        } else if(mAllTeams.get().size() == 0) {
-                            Prompter.printResponse("No teams have been created");
-                        } else {
-                            Prompter.printResponse("No players available to add");
-                        }
+                        onAddPlayerToTeam();
                         break;
                     case "3":
-                        if(mAllTeams.get().size() > 0 && mSelectedPlayers.get().size() > 0) {
-                            Team teamToRemoveFrom = promptForTeam(mAllTeams);
-
-                            if(teamToRemoveFrom.getPlayers().size() > 0) {
-                                Player playerToRemove = promptForPlayer(teamToRemoveFrom.getPlayerList());
-
-                                teamToRemoveFrom.removePlayer(playerToRemove);
-                                mSelectedPlayers.remove(playerToRemove);
-
-                                Prompter.printResponse(String
-                                    .format("%s %s has been removed from %s", playerToRemove.getFirstName(), playerToRemove.getLastName(),
-                                        teamToRemoveFrom.getName()));
-                            } else {
-                                Prompter.printResponse("No players available to remove");
-                            }
-                        } else if(mAllTeams.get().size() == 0) {
-                            Prompter.printResponse("No teams have been created");
-                        } else {
-                            Prompter.printResponse("No players available to remove");
-                        }
+                        onRemovePlayerFromTeam();
                         break;
                     case "4":
-                        if(mAllTeams.get().size() > 0) {
-                            Team teamToPrint = promptForTeam(mAllTeams);
-                            if (teamToPrint.getPlayers().size() > 0) {
-                                System.out.println(teamToPrint.getRoster());
-                            } else {
-                                Prompter.printResponse("There are no players on this team");
-                            }
-                        } else {
-                            Prompter.printResponse("No teams have been created");
-                        }
+                        onPrintTeamRoster();
                         break;
                     case "5":
-                        if(mAllTeams.get().size() > 0) {
-                            System.out.println(promptForTeam(mAllTeams).getPlayerReport());
-                        } else {
-                            Prompter.printResponse("No teams have been created");
-                        }
+                        onTeamHeightReport();
                         break;
                     case "6":
-                        if(mAllTeams.get().size() > 0 && mSelectedPlayers.get().size() > 0) {
-                            System.out.println(getLeagueBalanceReport());
-                        } else if(mAllTeams.get().size() == 0) {
-                            Prompter.printResponse("No teams have been created");
-                        } else {
-                            Prompter.printResponse("No players have been added to a team");
-                        }
+                        onLeagueBalanceReport();
                         break;
                     case "7":
                         Prompter.printResponse("Exiting the League Manager.");
@@ -149,6 +83,95 @@ public class LeagueManager {
                 ioe.printStackTrace();
             }
         } while(!choice.equals("7"));
+    }
+
+    private static void onCreateNewTeam() throws IOException {
+        if(mAllTeams.get().size() < mAllPlayers.get().size()) {
+            Team newTeam = promptForNewTeam();
+            mAllTeams.add(newTeam);
+
+            Prompter.printResponse(
+                String.format("New team %s coached by %s has been created",
+                    newTeam.getName(),
+                    newTeam.getCoach()
+                )
+            );
+        } else {
+            Prompter.printResponse("No players available to create a team");
+        }
+    }
+
+    private static void onAddPlayerToTeam() throws IOException {
+        if(mAllTeams.get().size() > 0 && mSelectedPlayers.get().size() < mAllPlayers.get().size()) {
+            Team teamToAddTo = promptForTeam(mAllTeams);
+            Player playerToAdd = promptForPlayer(
+                getRemainingPlayers(mAllPlayers, mSelectedPlayers));
+
+            teamToAddTo.addPlayer(playerToAdd);
+            mSelectedPlayers.add(playerToAdd);
+
+            Prompter.printResponse(String
+                .format("%s %s has been added to %s", playerToAdd.getFirstName(),
+                    playerToAdd.getLastName(), teamToAddTo.getName()));
+        } else if(mAllTeams.get().size() == 0) {
+            Prompter.printResponse("No teams have been created");
+        } else {
+            Prompter.printResponse("No players available to add");
+        }
+    }
+
+    private static void onRemovePlayerFromTeam() throws IOException {
+        if(mAllTeams.get().size() > 0 && mSelectedPlayers.get().size() > 0) {
+            Team teamToRemoveFrom = promptForTeam(mAllTeams);
+
+            if(teamToRemoveFrom.getPlayers().size() > 0) {
+                Player playerToRemove = promptForPlayer(teamToRemoveFrom.getPlayerList());
+
+                teamToRemoveFrom.removePlayer(playerToRemove);
+                mSelectedPlayers.remove(playerToRemove);
+
+                Prompter.printResponse(String
+                    .format("%s %s has been removed from %s", playerToRemove.getFirstName(), playerToRemove.getLastName(),
+                        teamToRemoveFrom.getName()));
+            } else {
+                Prompter.printResponse("No players available to remove");
+            }
+        } else if(mAllTeams.get().size() == 0) {
+            Prompter.printResponse("No teams have been created");
+        } else {
+            Prompter.printResponse("No players available to remove");
+        }
+    }
+
+    private static void onPrintTeamRoster() throws IOException {
+        if(mAllTeams.get().size() > 0) {
+            Team teamToPrint = promptForTeam(mAllTeams);
+            if (teamToPrint.getPlayers().size() > 0) {
+                System.out.println(teamToPrint.getRoster());
+            } else {
+                Prompter.printResponse("There are no players on this team");
+            }
+        } else {
+            Prompter.printResponse("No teams have been created");
+        }
+    }
+
+    private static void onTeamHeightReport() throws IOException {
+        if(mAllTeams.get().size() > 0) {
+            System.out.println(promptForTeam(mAllTeams).getPlayerReport());
+        } else {
+            Prompter.printResponse("No teams have been created");
+        }
+    }
+
+    private static void onLeagueBalanceReport() throws IOException {
+        if(mAllTeams.get().size() > 0 && mSelectedPlayers.get().size() > 0) {
+            System.out.println(getLeagueBalanceReport());
+        } else if(mAllTeams.get().size() == 0) {
+            Prompter.printResponse("No teams have been created");
+        } else {
+            Prompter.printResponse("No players have been added to a team");
+        }
     }
 
     private static String getLeagueBalanceReport() {
